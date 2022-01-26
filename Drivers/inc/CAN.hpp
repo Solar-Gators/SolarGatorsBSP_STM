@@ -44,7 +44,7 @@ private:
     .cb_size = sizeof(rx_task_control_block_),
     .stack_mem = &rx_task_buffer_[0],
     .stack_size = sizeof(rx_task_buffer_),
-    .priority = (osPriority_t) osPriorityLow,
+    .priority = (osPriority_t) osPriorityRealtime,
   };
 };
 
