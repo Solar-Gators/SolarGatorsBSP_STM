@@ -11,7 +11,7 @@
 namespace SolarGators::Drivers {
 
 Button::Button(const char* name, GPIO_TypeDef* port, uint16_t pin, uint16_t press_time, GPIO_PinState active_state):
-    name_(name),port_(port),pin_(pin),press_time_(press_time), active_state_(active_state)
+    name_(name),port_(port),pin_(pin),press_time_(press_time), active_state_(active_state), press_count_(0), last_valid_press_time_(0)
 {
   disabled_ = false;
 }
