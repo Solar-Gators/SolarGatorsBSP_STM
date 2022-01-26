@@ -10,8 +10,25 @@
 namespace SolarGators {
 namespace Drivers {
 
-CANDriver::CANDriver(CAN_HandleTypeDef& hcan, uint32_t rx_fifo_num_):hcan_(hcan),rx_fifo_num_(rx_fifo_num_)
+CANDriver::CANDriver(CAN_HandleTypeDef* hcan, uint32_t rx_fifo_num_):hcan_(hcan),rx_fifo_num_(rx_fifo_num_)
 {
+
+}
+
+void CANDriver::Init()
+{
+  // Configure Filter
+  //Initialize a hardware filter that passes everything
+  CAN_FilterTypeDef sFilterConfig;
+  sFilterConfig.FilterActivation = CAN_FILTER_ENABLE; /*Enable the filter*/
+  sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;   /*Mask mode*/
+  sFilterConfig.FilterMaskIdHigh = 0;
+  sFilterConfig.FilterMaskIdLow = 0;                  /*Accept everything*/
+  sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;  /*One 32-bit filter*/
+  sFilterConfig.FilterBank = 0;                       /*Init bank 0*/
+  sFilterConfig.FilterFIFOAssignment = 0;             /*Assign to FIFO 0*/
+  HAL_CAN_ConfigFilter(hcan_, &sFilterConfig);
+
   can_rx_event_ = osEventFlagsNew(NULL);
   if (can_rx_event_ == NULL)
   {
@@ -23,6 +40,8 @@ CANDriver::CANDriver(CAN_HandleTypeDef& hcan, uint32_t rx_fifo_num_):hcan_(hcan)
   {
       Error_Handler();
   }
+  HAL_CAN_ActivateNotification(hcan_, CAN_IT_RX_FIFO0_MSG_PENDING);
+  HAL_CAN_Start(hcan_);
 }
 
 CANDriver::~CANDriver()
@@ -36,9 +55,9 @@ void CANDriver::HandleReceive()
     CAN_RxHeaderTypeDef pHeader;
     uint8_t aData[MAX_DATA_SIZE];
 
-    while(HAL_CAN_GetRxFifoFillLevel(&hcan_, rx_fifo_num_))
+    while(HAL_CAN_GetRxFifoFillLevel(hcan_, rx_fifo_num_))
     {
-      HAL_CAN_GetRxMessage(&hcan_, rx_fifo_num_, &pHeader, aData);
+      HAL_CAN_GetRxMessage(hcan_, rx_fifo_num_, &pHeader, aData);
       DataModules::DataModule* rx_module = modules_.Find(pHeader.IDE == CAN_ID_STD ? pHeader.StdId : pHeader.ExtId);
       if(rx_module != nullptr)
       {
@@ -47,13 +66,14 @@ void CANDriver::HandleReceive()
         osMutexRelease(rx_module->mutex_id_);
       }
     }
+    HAL_CAN_ActivateNotification(hcan_, CAN_IT_RX_FIFO0_MSG_PENDING);
   }
 }
 
 void CANDriver::Send(SolarGators::DataModules::DataModule* data)
 {
   //Spinlock until a tx mailbox is empty
-  while(!HAL_CAN_GetTxMailboxesFreeLevel(&hcan_));
+  while(!HAL_CAN_GetTxMailboxesFreeLevel(hcan_));
 
   //Initialize Header
   uint32_t pTxMailbox;
@@ -75,7 +95,7 @@ void CANDriver::Send(SolarGators::DataModules::DataModule* data)
   osMutexAcquire(data->mutex_id_, osWaitForever);
   data->ToByteArray(aData);
   osMutexRelease(data->mutex_id_);
-  HAL_CAN_AddTxMessage(&hcan_, &pHeader, aData, &pTxMailbox);
+  HAL_CAN_AddTxMessage(hcan_, &pHeader, aData, &pTxMailbox);
 }
 
 bool CANDriver::AddRxModule(DataModules::DataModule* module)

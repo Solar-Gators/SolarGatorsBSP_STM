@@ -6,9 +6,10 @@
  */
 
 #include "Steering.hpp"
+#include <string.h>
 
 namespace {
-  static constexpr uint32_t ID = 0x1234;
+  static constexpr uint32_t ID = 1023;
   static constexpr uint32_t SIZE = 0x2;
 }
 namespace SolarGators::DataModules
@@ -70,16 +71,17 @@ namespace SolarGators::DataModules
   }
   void Steering::ToByteArray(uint8_t* buff) const
   {
-    buff[0] = (static_cast<uint8_t>(left_turn_)     << 0);
-    buff[0] = (static_cast<uint8_t>(right_turn_)    << 1);
-    buff[0] = (static_cast<uint8_t>(hazards_)       << 2);
-    buff[0] = (static_cast<uint8_t>(bps_fault_)     << 3);
-    buff[0] = (static_cast<uint8_t>(cruise_enable_) << 4);
-    buff[0] = (static_cast<uint8_t>(eco_enable_)    << 5);
-    buff[0] = (static_cast<uint8_t>(headlights_)    << 6);
-    buff[0] = (static_cast<uint8_t>(horn_)          << 7);
-    buff[1] = (static_cast<uint8_t>(reverse_)       << 0);
-    buff[2] = cruise_speed_;
+    memset(buff, 0, sizeof(buff));
+    buff[0] |= (static_cast<uint8_t>(left_turn_)     << 0);
+    buff[0] |= (static_cast<uint8_t>(right_turn_)    << 1);
+    buff[0] |= (static_cast<uint8_t>(hazards_)       << 2);
+    buff[0] |= (static_cast<uint8_t>(bps_fault_)     << 3);
+    buff[0] |= (static_cast<uint8_t>(cruise_enable_) << 4);
+    buff[0] |= (static_cast<uint8_t>(eco_enable_)    << 5);
+    buff[0] |= (static_cast<uint8_t>(headlights_)    << 6);
+    buff[0] |= (static_cast<uint8_t>(horn_)          << 7);
+    buff[1] |= (static_cast<uint8_t>(reverse_)       << 0);
+    buff[2] |= cruise_speed_;
   }
   void Steering::FromByteArray(uint8_t* buff)
   {
