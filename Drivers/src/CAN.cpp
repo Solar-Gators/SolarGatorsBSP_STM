@@ -40,6 +40,7 @@ void CANDriver::Init()
   {
       Error_Handler();
   }
+  HAL_CAN_ActivateNotification(hcan_, CAN_IT_RX_FIFO0_MSG_PENDING);
   HAL_CAN_Start(hcan_);
 }
 
@@ -65,6 +66,7 @@ void CANDriver::HandleReceive()
         osMutexRelease(rx_module->mutex_id_);
       }
     }
+    HAL_CAN_ActivateNotification(hcan_, CAN_IT_RX_FIFO0_MSG_PENDING);
   }
 }
 
