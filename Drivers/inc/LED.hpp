@@ -20,6 +20,9 @@ public:
   void TurnOff();
   void Toggle();
   void UpdateLed();
+  bool GetStatus();
+  bool IsOn();
+  bool IsOff();
 private:
   bool on_;
   const char* name_;

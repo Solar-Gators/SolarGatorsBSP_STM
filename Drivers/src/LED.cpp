@@ -42,4 +42,19 @@ void LED::UpdateLed()
     TurnOff();
 }
 
+bool LED::GetStatus()
+{
+  return on_;
+}
+
+bool LED::IsOn()
+{
+  return on_;
+}
+
+bool LED::IsOff()
+{
+  return !on_;
+}
+
 } /* namespace SolarGators */
