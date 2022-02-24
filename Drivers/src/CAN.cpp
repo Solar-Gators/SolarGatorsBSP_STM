@@ -58,7 +58,7 @@ void CANDriver::HandleReceive()
     while(HAL_CAN_GetRxFifoFillLevel(hcan_, rx_fifo_num_))
     {
       HAL_CAN_GetRxMessage(hcan_, rx_fifo_num_, &pHeader, aData);
-      DataModules::DataModule* rx_module = modules_.Find(pHeader.IDE == CAN_ID_STD ? pHeader.StdId : pHeader.ExtId);
+      DataModules::DataModule* rx_module = (*modules_.find(pHeader.IDE == CAN_ID_STD ? pHeader.StdId : pHeader.ExtId)).second;
       if(rx_module != nullptr)
       {
         osMutexAcquire(rx_module->mutex_id_, osWaitForever);
@@ -82,12 +82,12 @@ void CANDriver::Send(SolarGators::DataModules::DataModule* data)
   pHeader.DLC = data->size_;
   if(data->is_ext_id_)
   {
-    pHeader.ExtId = data->id_;
+    pHeader.ExtId = data->can_id_;
     pHeader.IDE = CAN_ID_EXT;
   }
   else
   {
-    pHeader.StdId = data->id_;
+    pHeader.StdId = data->can_id_;
     pHeader.IDE = CAN_ID_STD;
   }
   //Put CAN message in tx mailbox
@@ -100,7 +100,9 @@ void CANDriver::Send(SolarGators::DataModules::DataModule* data)
 
 bool CANDriver::AddRxModule(DataModules::DataModule* module)
 {
-  return modules_.Insert(module->id_, module);
+  modules_.insert(etl::make_pair(module->can_id_, module));
+  // TODO: Check if successful insertion
+  return true;
 }
 
 bool CANDriver::RemoveRxModule(uint32_t module_id)

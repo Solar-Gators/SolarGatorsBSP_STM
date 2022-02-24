@@ -15,7 +15,7 @@ namespace {
 }
 
 FrontLights::FrontLights():
-        DataModule(ID, SIZE)
+        DataModule(ID, 0, SIZE)
 {
   // TODO Auto-generated constructor stub
 

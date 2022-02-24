@@ -33,7 +33,7 @@ protected:
 class MitsubaRx0 final: public DataModule
 {
 public:
-  MitsubaRx0(uint32_t id);
+  MitsubaRx0(uint32_t can_id, uint16_t telem_id);
   virtual ~MitsubaRx0();
   // Getters
   uint16_t GetBatteryVoltage() const;
@@ -62,7 +62,7 @@ protected:
 class MitsubaRx1 final: public DataModule
 {
 public:
-  MitsubaRx1(uint32_t id);
+  MitsubaRx1(uint32_t can_id, uint16_t telem_id);
   virtual ~MitsubaRx1();
   // Getters
   bool GetPowerMode() const;
@@ -91,7 +91,7 @@ protected:
 class MitsubaRx2 final: public DataModule
 {
 public:
-  MitsubaRx2(uint32_t id);
+  MitsubaRx2(uint32_t can_id, uint16_t telem_id);
   virtual ~MitsubaRx2();
   // Getters
   bool GetAdSensorError() const;

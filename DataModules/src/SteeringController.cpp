@@ -213,7 +213,7 @@ namespace DataModules {
 
   void SteeringController::AddButton(Drivers::Button* button)
   {
-    buttons_.Insert(button->pin_, button);
+    buttons_.insert(etl::make_pair(button->pin_, *button));
   }
 
   void SteeringController::ButtonHandler()
@@ -226,7 +226,7 @@ namespace DataModules {
       {
         uint16_t pin;
         osMessageQueueGet(button_queue_, &pin, NULL, 0);
-        Drivers::Button* button = buttons_.Find(pin);
+        Drivers::Button* button = &(*buttons_.find(pin)).second;
         if(button != nullptr)
           button->HandlePress();
       }

@@ -53,8 +53,8 @@ void MitsubaRequest::FromByteArray(uint8_t* buff)
   requestFrame2 = buff[0] & (1 << 2);
 }
 
-MitsubaRx0::MitsubaRx0(uint32_t id):
-    DataModule(id, Rx0_Size, true), battVoltage(0),battCurrent(0),
+MitsubaRx0::MitsubaRx0(uint32_t can_id, uint16_t telem_id):
+    DataModule(can_id, telem_id, Rx0_Size, true), battVoltage(0),battCurrent(0),
     battCurrentDir(false),motorCurrentPkAvg(0),FETtemp(0),
     motorRPM(0),PWMDuty(0),LeadAngle(0)
 { }
@@ -158,8 +158,8 @@ void MitsubaRx0::FromByteArray(uint8_t* buff)
   LeadAngle = static_cast<uint8_t>((buff[7] >> 1));
 }
 
-MitsubaRx1::MitsubaRx1(uint32_t id):
-    DataModule(id, Rx1_Size, true)
+MitsubaRx1::MitsubaRx1(uint32_t can_id, uint16_t telem_id):
+    DataModule(can_id, telem_id, Rx1_Size, true)
 { }
 
 MitsubaRx1::~MitsubaRx1()
@@ -246,8 +246,8 @@ void MitsubaRx1::FromByteArray(uint8_t* buff)
   regenStat = static_cast<bool>((buff[4] >> 6) & 1);
 }
 
-MitsubaRx2::MitsubaRx2(uint32_t id):
-    DataModule(id, Rx2_Size, true)
+MitsubaRx2::MitsubaRx2(uint32_t can_id, uint16_t telem_id):
+    DataModule(can_id, telem_id, Rx2_Size, true)
 { }
 
 MitsubaRx2::~MitsubaRx2()

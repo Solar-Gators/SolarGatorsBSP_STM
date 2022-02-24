@@ -11,12 +11,10 @@
 #include <cmsis_os.h>
 #include "main.h"
 #include <DataModule.hpp>
-#include "Map.hpp"
+#include "etl/map.h"
 
 namespace SolarGators {
 namespace Drivers {
-
-
 
 class CANDriver {
 public:
@@ -28,14 +26,14 @@ public:
   void SetRxFlag();
   bool AddRxModule(DataModules::DataModule* module);
   bool RemoveRxModule(uint32_t module_id);
-  static constexpr uint8_t MAX_DATA_SIZE = 16;
+  static constexpr uint8_t MAX_DATA_SIZE = 16;     // Maximum data size in bytes
 private:
-  SolarGators::Containers::Map<uint16_t, SolarGators::DataModules::DataModule, 5> modules_;
+  ::etl::map<uint16_t, SolarGators::DataModules::DataModule*, 5> modules_;
   CAN_HandleTypeDef* hcan_;                        // CAN handle
   uint32_t rx_fifo_num_;                           // CAN hardware fifo number
   osEventFlagsId_t can_rx_event_;                  // Rx CAN Interrupt Event
   osThreadId_t rx_task_handle_;                    // Rx Task Handle
-  uint32_t rx_task_buffer_[ 128 ];                  // Rx Task Buffer
+  uint32_t rx_task_buffer_[ 128 ];                 // Rx Task Buffer
   StaticTask_t rx_task_control_block_;             // Rx Task Control Block
   const osThreadAttr_t rx_task_attributes_ =       // Rx Task Attributes
   {

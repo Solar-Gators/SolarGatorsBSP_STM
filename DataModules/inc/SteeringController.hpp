@@ -11,7 +11,8 @@
 #include <functional>
 #include "cmsis_os2.h"
 
-#include "Map.hpp"
+#include "etl/map.h"
+
 #include "Steering.hpp"
 #include "Button.hpp"
 #include "LED.hpp"
@@ -99,7 +100,7 @@ private:
     .priority = (osPriority_t) osPriorityRealtime7,
   };
 
-  SolarGators::Containers::Map<uint16_t, Drivers::Button, 10> buttons_;
+  ::etl::map<uint16_t, Drivers::Button, 10> buttons_;
 };
 
 } /* namespace DataModules */

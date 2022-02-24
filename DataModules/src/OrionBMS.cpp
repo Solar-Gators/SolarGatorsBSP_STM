@@ -10,7 +10,7 @@
 namespace SolarGators::DataModules
 {
   OrionBMS::OrionBMS(uint32_t id):
-      DataModule(id, Size)
+      DataModule(id, 0, Size)
   { }
 
   OrionBMS::~OrionBMS()

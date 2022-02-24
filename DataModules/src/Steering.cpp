@@ -15,7 +15,7 @@ namespace {
 namespace SolarGators::DataModules
 {
   Steering::Steering():
-    DataModule(ID, SIZE),
+    DataModule(ID, 0, SIZE),
     left_turn_(false),
     right_turn_(false),
     hazards_(false),

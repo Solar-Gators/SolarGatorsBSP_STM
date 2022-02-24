@@ -13,7 +13,7 @@ namespace DataModules {
 static constexpr uint8_t Mppt_Size = 8;
 
 Proton1::Proton1(uint32_t id):
-    DataModule(id, Mppt_Size), arrayVoltage(0),
+    DataModule(id, 0, Mppt_Size), arrayVoltage(0),
     arrayCurrent(0), batteryVoltage(0),mpptTemperature(0)
 { }
 

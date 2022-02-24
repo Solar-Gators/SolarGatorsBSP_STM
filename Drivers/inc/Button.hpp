@@ -9,14 +9,13 @@
 #define SOLARGATORSBSP_DRIVERS_INC_BUTTON_HPP_
 
 #include "string"
-#include "atomic"
 #include "functional"
 
 #include "cmsis_os.h"
 #include "main.h"
 
-namespace SolarGators::Drivers {
-
+namespace SolarGators {
+namespace Drivers {
 class Button
 {
 public:
@@ -32,17 +31,17 @@ public:
   uint16_t pin_;
   uint8_t action_called_time_;
 private:
-  uint32_t last_valid_press_time_;
-  uint32_t press_count_;
   // Time that the button needs to be pressed for in order to register (Milliseconds)
   const uint16_t press_time_;
   GPIO_PinState active_state_;
+  uint32_t press_count_;
+  uint32_t last_valid_press_time_;
   // Debounce Time in ticks (which is milliseconds in our case)
   const uint16_t debounce_time_ = 50;
   // If the button is able to generate an action (Used for debouncing)
-  std::atomic_bool disabled_;
+  bool disabled_;
 };
-
+} /* namespcae Drivers */
 } /* namespace SolarGators */
 
 
