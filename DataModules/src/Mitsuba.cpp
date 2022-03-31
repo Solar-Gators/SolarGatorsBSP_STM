@@ -10,8 +10,8 @@
 namespace SolarGators {
 namespace DataModules {
 
-MitsubaRequest::MitsubaRequest(uint32_t id):
-    DataModule(id, Request_Size, true)
+MitsubaRequest::MitsubaRequest(uint32_t can_id):
+    DataModule(can_id, 0, Request_Size, 0, true)
 { }
 
 MitsubaRequest::~MitsubaRequest()
@@ -54,7 +54,7 @@ void MitsubaRequest::FromByteArray(uint8_t* buff)
 }
 
 MitsubaRx0::MitsubaRx0(uint32_t can_id, uint16_t telem_id):
-    DataModule(can_id, telem_id, Rx0_Size, true), battVoltage(0),battCurrent(0),
+    DataModule(can_id, telem_id, Rx0_Size, 0, true), battVoltage(0),battCurrent(0),
     battCurrentDir(false),motorCurrentPkAvg(0),FETtemp(0),
     motorRPM(0),PWMDuty(0),LeadAngle(0)
 { }
@@ -159,7 +159,7 @@ void MitsubaRx0::FromByteArray(uint8_t* buff)
 }
 
 MitsubaRx1::MitsubaRx1(uint32_t can_id, uint16_t telem_id):
-    DataModule(can_id, telem_id, Rx1_Size, true)
+    DataModule(can_id, telem_id, Rx1_Size, 0, true)
 { }
 
 MitsubaRx1::~MitsubaRx1()
@@ -247,7 +247,7 @@ void MitsubaRx1::FromByteArray(uint8_t* buff)
 }
 
 MitsubaRx2::MitsubaRx2(uint32_t can_id, uint16_t telem_id):
-    DataModule(can_id, telem_id, Rx2_Size, true)
+    DataModule(can_id, telem_id, Rx2_Size, 0, true)
 { }
 
 MitsubaRx2::~MitsubaRx2()

@@ -15,7 +15,7 @@ namespace SolarGators::DataModules
   class OrionBMS final: public DataModule
   {
   public:
-    OrionBMS(uint32_t id);
+    OrionBMS(uint32_t can_id, uint32_t telem_id);
     ~OrionBMS();
     float GetLowCellVoltage();
     float GetHighCellVoltage();
