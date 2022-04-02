@@ -26,7 +26,7 @@ public:
   void SetRxFlag();
   bool AddRxModule(DataModules::DataModule* module);
   bool RemoveRxModule(uint32_t module_id);
-  static constexpr uint8_t MAX_DATA_SIZE = 16;     // Maximum data size in bytes
+  static constexpr uint8_t MAX_DATA_SIZE = 8;     // Maximum data size in bytes
 private:
   ::etl::map<uint16_t, SolarGators::DataModules::DataModule*, 5> modules_;
   CAN_HandleTypeDef* hcan_;                        // CAN handle
