@@ -36,14 +36,18 @@ public:
   MitsubaRx0(uint32_t can_id, uint16_t telem_id);
   virtual ~MitsubaRx0();
   // Getters
-  uint16_t GetBatteryVoltage() const;
+  float GetBatteryVoltage() const;
   uint16_t GetBatteryCurrent() const;
+  enum BatteryCurrentDir {
+    Discharging = 0,
+    Charging
+  };
   bool GetBatteryCurrentDir() const;
   uint16_t GetMotorCurrentPkAvg() const;
-  uint8_t GetFetTemp() const;
+  uint16_t GetFetTemp() const;
   uint16_t GetMotorRPM() const;
-  uint16_t GetPWMDuty() const;
-  uint16_t GetLeadAngle() const;
+  float GetPWMDuty() const;
+  float GetLeadAngle() const;
   // Converter Functions
   void ToByteArray(uint8_t* buff) const;
   void FromByteArray(uint8_t* buff);
@@ -65,12 +69,25 @@ public:
   MitsubaRx1(uint32_t can_id, uint16_t telem_id);
   virtual ~MitsubaRx1();
   // Getters
+  enum PowerMode {
+    ECO,
+    Power
+  };
   bool GetPowerMode() const;
+  enum MC_Mode {
+    Current,
+    PWM
+  };
   bool GetMcMode() const;
-  uint16_t GetAcceleratorPosition() const;
-  uint16_t GetRegenVrPosition() const;
+  float GetAcceleratorPosition() const;
+  float GetRegenVrPosition() const;
   uint8_t GetDigitSwitchPosition()const;
-  uint16_t GetOutTargetVal() const;
+  float GetOutTargetVal() const;
+  enum DriveAction {
+    Reserved = 0,
+    Forward = 1,
+    Reverse = 2
+  };
   uint8_t GetDriveActStat() const;
   bool GetRegenStat() const;
   // Converter Functions
