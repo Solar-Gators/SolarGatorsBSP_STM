@@ -11,9 +11,15 @@
 
 namespace SolarGators::DataModuleInfo
 {
-// ---- Adresses ---- //
+// ---- Addresses ---- //
+
 // BMS
-static constexpr uint32_t Orion_Id = 0x6B0;
+static constexpr uint32_t BMS_RX0_MSG_ID = 0x6B0;
+static constexpr uint32_t BMS_RX1_MSG_ID = 0x6B1;
+static constexpr uint32_t BMS_RX2_MSG_ID = 0x6B2;
+static constexpr uint32_t BMS_RX3_MSG_ID = 0x6B3;
+static constexpr uint32_t BMS_RX4_MSG_ID = 0x6B4;
+static constexpr uint32_t BMS_RX5_MSG_ID = 0x6B5;
 
 // Mitsuba
 //TX Messages
