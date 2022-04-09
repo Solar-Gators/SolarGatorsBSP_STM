@@ -78,7 +78,7 @@ void CANDriver::Send(SolarGators::DataModules::DataModule* data)
   //Initialize Header
   uint32_t pTxMailbox;
   CAN_TxHeaderTypeDef pHeader;
-  pHeader.RTR = CAN_RTR_DATA;
+  pHeader.RTR = data->is_rtr_ ? CAN_RTR_REMOTE : CAN_RTR_DATA;
   pHeader.DLC = data->size_;
   if(data->is_ext_id_)
   {
