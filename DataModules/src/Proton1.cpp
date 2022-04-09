@@ -13,7 +13,7 @@ namespace DataModules {
 static constexpr uint8_t Mppt_Size = 8;
 
 Proton1::Proton1(uint32_t id):
-    DataModule(id, 0, Mppt_Size), arrayVoltage(0),
+    DataModule(id, 0, Mppt_Size, 0, false, true), arrayVoltage(0),
     arrayCurrent(0), batteryVoltage(0),mpptTemperature(0)
 { }
 
@@ -47,6 +47,22 @@ void Proton1::FromByteArray(uint8_t* buff)
   arrayCurrent = static_cast<float>(preArrayCurrent)/100;
   batteryVoltage = static_cast<float>(preBatteryVoltage)/100;
   mpptTemperature = static_cast<float>(preMpptTemperature)/100;
+}
+
+float Proton1::getArrayCurrent() const {
+  return arrayCurrent;
+}
+
+float Proton1::getArrayVoltage() const {
+  return arrayVoltage;
+}
+
+float Proton1::getBatteryVoltage() const {
+  return batteryVoltage;
+}
+
+float Proton1::getMpptTemperature() const {
+  return mpptTemperature;
 }
 
 } /* namespace DataModules */

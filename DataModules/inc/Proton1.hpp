@@ -18,13 +18,14 @@ public:
   Proton1(uint32_t id);
   virtual ~Proton1();
   // Getters
-  float GetArrayVoltage();
-  float GetArrayCurrent();
-  float GetBatteryVoltage();
-  float GetMpptTemperature();
+  float getArrayVoltage();
+  float getArrayCurrent();
+  float getBatteryVoltage();
+  float getMpptTemperature();
   // Converter Functions
   void ToByteArray(uint8_t* buff) const;
   void FromByteArray(uint8_t* buff);
+
 protected:
   float arrayVoltage;
   float arrayCurrent;
