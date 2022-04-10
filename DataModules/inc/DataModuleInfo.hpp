@@ -30,7 +30,7 @@ static constexpr uint32_t MOTORRX1_RL_MSG_ID = 0x08950225;
 static constexpr uint32_t MOTORRX2_RL_MSG_ID = 0x08A50225;
 
 // MPPT
-static constexpr uint16_t MPPT0_MSG_ID = 1024;
+static constexpr uint16_t MPPT0_MSG_ID = 0x600;
 
 // Steering Wheel
 static constexpr uint16_t STEERING_ID = 2048;
