@@ -17,11 +17,13 @@ void InfoSquare::Draw(ILI9341& disp)
   disp.DrawRect(x, y, DataSqW, DataSqH, 0xF800);
   // Draw the Title
   disp.DrawText(x+TextPaddX, y+TitlePaddY, title.c_str(), 0xF800);
-  UpdateValue(disp, " N/A ");
+  etl::string<5> tmp(" N/A ");
+  UpdateValue(disp, tmp);
 }
 
-void InfoSquare::UpdateValue(ILI9341& disp, etl::string<5> val)
+void InfoSquare::UpdateValue(ILI9341& disp, etl::string<5>& val)
 {
+  disp.SetTextSize(TextSize);
   disp.DrawText(x+TextPaddX, TextHeight*TextSize+TitlePaddY+DataPaddY+y, val.c_str(), 0xF800);
 }
 
@@ -49,9 +51,12 @@ UI::~UI()
 
 }
 
-void UI::UpdateSquare(uint8_t num, etl::string<5> val)
+void UI::UpdateSquare(uint8_t num, etl::string<5>& val)
 {
-
+  if(num < 4)
+  {
+    first_row_[num].UpdateValue(disp, val);
+  }
 }
 
 void UI::DrawSpeed()
@@ -66,9 +71,11 @@ void UI::DrawSpeed()
 
 void UI::UpdateSpeed(float speed)
 {
+  // Draw Speed
+  disp.SetTextSize(3);
   etl::string<4> s_speed;
   etl::to_string(speed, s_speed, etl::format_spec().precision(1).width(4).fill(0), false);
-  disp.DrawText(112, 82, s_speed.c_str(), 0xF800);
+  disp.DrawText(112+9, 82, s_speed.c_str(), 0xF800);
 }
 
 void UI::DrawTripCodes()
@@ -86,31 +93,22 @@ void UI::DrawTripCodes()
     "hallSensorShort", "hallSensorOpen" };
   // BMS Trip Codes
   const char* orion_faults[] = {
-    "Internal Cell Communication",  
-    "Cell Balancing Stuck Off",
-    "Weak Cell",    
-    "Low Cell Voltage",             
-    "Cell Open Wiring",
-    "Current Sensor",
-    "Cell Voltage Over 5v",         
-    "Cell Bank",
-    "Weak Pack",
-    "Fan Monitor",
-    "Thermistor",
-    "Can Communication",            
-    "Redundant Power Supply",
-    "High Voltage Isolation",
-    "Invalid Input Supply Voltage",
-    "Charge En Relay",
-    "Discharge En Relay",
-    "Charger Safety Relay",
-    "Internal Hardware",
-    "Internal Heatsink Thermistor",
-    "Internal Logic",
-    "Highest Cell Voltage Too High",
-    "Lowest Cell Voltage Too Low",
-    "Pack Too Hot"};
-
+    "Internal Cell Communication", "Cell Balancing Stuck Off",
+    "Weak Cell", "Low Cell Voltage", "Cell Open Wiring",
+    "Current Sensor", "Cell Voltage Over 5v",
+    "Cell Bank", "Weak Pack", "Fan Monitor",
+    "Thermistor", "Can Communication",
+    "Redundant Power Supply", "High Voltage Isolation",
+    "Invalid Input Supply Voltage", "Charge En Relay",
+    "Discharge En Relay", "Charger Safety Relay",
+    "Internal Hardware", "Internal Heatsink Thermistor",
+    "Internal Logic", "Highest Cell Voltage Too High",
+    "Lowest Cell Voltage Too Low", "Pack Too Hot"};
+    disp.SetTextSize(2);
+    disp.DrawText(0, 120, "BMS Status: OK", 0xFFFF);
+    disp.DrawText(0, 140, "This is a place holder", 0x8F00);
+    disp.DrawText(0, 180, "MC Status: OK", 0xFFFF);
+    disp.DrawText(0, 200, "This is a place holder", 0x8F00);
 }
 
 } /* namespace Drivers */

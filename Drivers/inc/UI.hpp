@@ -39,7 +39,7 @@ public:
   static constexpr uint16_t TextHeight = 8;
   static constexpr uint8_t TextSize = 2;
   void Draw(ILI9341& disp);
-  void UpdateValue(ILI9341& disp, etl::string<5> val);
+  void UpdateValue(ILI9341& disp, etl::string<5>& val);
 };
 
 // Trip Code Struct
@@ -50,7 +50,7 @@ public:
   ~UI();
   void Update();
   ILI9341& disp;
-  void UpdateSquare(uint8_t num, etl::string<5> val);
+  void UpdateSquare(uint8_t num, etl::string<5>& val);
   void UpdateSpeed(float speed);
 private:
   etl::array<InfoSquare, 4> first_row_;
