@@ -42,8 +42,6 @@ public:
   void UpdateValue(ILI9341& disp, etl::string<5>& val);
 };
 
-// Trip Code Struct
-
 class UI {
 public:
   UI(ILI9341& display);
@@ -52,6 +50,23 @@ public:
   ILI9341& disp;
   void UpdateSquare(uint8_t num, etl::string<5>& val);
   void UpdateSpeed(float speed);
+  static constexpr uint32_t WHITE   = 0xFFFF;
+  static constexpr uint32_t BLACK   = 0x0000;
+  static constexpr uint32_t BLUE    = 0x0197;
+  static constexpr uint32_t RED     = 0xF800;
+  static constexpr uint32_t MAGENTA = 0xF81F;
+  static constexpr uint32_t GREEN   = 0x07E0;
+  static constexpr uint16_t DARK_GREEN = 0x8F00;
+  static constexpr uint32_t CYAN    = 0x7FFF;
+  static constexpr uint32_t YELLOW  = 0xFFE0;
+  static constexpr uint32_t GRAY    = 0x2104;
+  static constexpr uint32_t PURPLE  = 0xF11F;
+  static constexpr uint32_t ORANGE  = 0xFD20;
+  static constexpr uint32_t PINK    = 0xfdba;
+  static constexpr uint32_t OLIVE   = 0xdfe4;
+  static constexpr uint16_t color_neutral_ = WHITE;
+  static constexpr uint16_t color_ok_ = GREEN;
+  static constexpr uint16_t color_fail_ = RED;
 private:
   etl::array<InfoSquare, 4> first_row_;
   void DrawSpeed();

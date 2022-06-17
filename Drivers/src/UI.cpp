@@ -14,9 +14,9 @@ void InfoSquare::Draw(ILI9341& disp)
 {
   disp.SetTextSize(TextSize);
   // Draw the Border
-  disp.DrawRect(x, y, DataSqW, DataSqH, 0xF800);
+  disp.DrawRect(x, y, DataSqW, DataSqH, UI::color_neutral_);
   // Draw the Title
-  disp.DrawText(x+TextPaddX, y+TitlePaddY, title.c_str(), 0xF800);
+  disp.DrawText(x+TextPaddX, y+TitlePaddY, title.c_str(), UI::color_neutral_);
   etl::string<5> tmp(" N/A ");
   UpdateValue(disp, tmp);
 }
@@ -24,7 +24,7 @@ void InfoSquare::Draw(ILI9341& disp)
 void InfoSquare::UpdateValue(ILI9341& disp, etl::string<5>& val)
 {
   disp.SetTextSize(TextSize);
-  disp.DrawText(x+TextPaddX, TextHeight*TextSize+TitlePaddY+DataPaddY+y, val.c_str(), 0xF800);
+  disp.DrawText(x+TextPaddX, TextHeight*TextSize+TitlePaddY+DataPaddY+y, val.c_str(), UI::color_neutral_);
 }
 
 UI::UI(ILI9341& display):disp(display)
@@ -64,7 +64,7 @@ void UI::DrawSpeed()
   // Draw Speed
   disp.SetTextSize(3);
   const char* str2 = "Speed";
-  disp.DrawText(115, 54, str2, 0xF800);
+  disp.DrawText(115, 54, str2, color_neutral_);
   disp.SetTextSize(4);
   UpdateSpeed(99.9);
 }
@@ -75,22 +75,22 @@ void UI::UpdateSpeed(float speed)
   disp.SetTextSize(3);
   etl::string<4> s_speed;
   etl::to_string(speed, s_speed, etl::format_spec().precision(1).width(4).fill(0), false);
-  disp.DrawText(112+9, 82, s_speed.c_str(), 0xF800);
+  disp.DrawText(112+9, 82, s_speed.c_str(), color_neutral_);
 }
 
 void UI::DrawTripCodes()
 {
   // Mitsuba Trip Codes
   const char* mitsuba_faults[] = {
-    "adSensorError", "motorCurrSensorUError",
-    "motorCurrSensorWError", "fetThermError",
-    "battVoltSensorError", "battCurrSensorError",
-    "battCurrSensorAdjError", "motorCurrSensorAdjError",
-    "accelPosError", "contVoltSensorError",
-    "powerSystemError", "overCurrError",
-    "overVoltError", "overCurrLimit",
-    "motorSystemError", "motorLock",
-    "hallSensorShort", "hallSensorOpen" };
+    "AD Sensor Error", "Motor Curr Sensor U Error",
+    "Motor Curr Sensor W Error", "Fet Therm Error",
+    "Batt Volt Sensor Error", "Batt Curr Sensor Error",
+    "Batt Curr Sensor Adj Error", "Motor Curr Sensor Adj Error",
+    "Accel Pos Error", "Cont Volt Sensor Error",
+    "Power System Error", "Over Curr Error",
+    "Over Volt Error", "Over Curr Limit",
+    "Motor System Error", "Motor Lock",
+    "Hall Sensor Short", "Hall Sensor Open" };
   // BMS Trip Codes
   const char* orion_faults[] = {
     "Internal Cell Communication", "Cell Balancing Stuck Off",
@@ -105,10 +105,20 @@ void UI::DrawTripCodes()
     "Internal Logic", "Highest Cell Voltage Too High",
     "Lowest Cell Voltage Too Low", "Pack Too Hot"};
     disp.SetTextSize(2);
-    disp.DrawText(0, 120, "BMS Status: OK", 0xFFFF);
-    disp.DrawText(0, 140, "This is a place holder", 0x8F00);
-    disp.DrawText(0, 180, "MC Status: OK", 0xFFFF);
-    disp.DrawText(0, 200, "This is a place holder", 0x8F00);
+    disp.DrawText(0, 120, "BMS Status: ", color_neutral_);
+    disp.DrawText(2*6*12, 120, "OK", color_ok_);
+    // if there is a failure
+    if(false) // TODO JC make this actually work
+    {
+      disp.DrawText(0, 140, orion_faults[3], color_neutral_);
+    }
+    disp.DrawText(0, 180, "MC Status: ", color_neutral_);
+    disp.DrawText(2*6*11, 180, "Trip", color_fail_);
+    // if there is a failure
+    if(true) // TODO JC make this actually work
+    {
+      disp.DrawText(0, 200, mitsuba_faults[1], color_fail_);
+    }
 }
 
 } /* namespace Drivers */
