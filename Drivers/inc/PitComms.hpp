@@ -30,7 +30,7 @@ public:
   virtual ~PitComms();
   void Init();
   void SendDataModule(SolarGators::DataModules::DataModule& data_module);
-  void EscapeData(uint8_t data);
+  uint8_t EscapeData(uint8_t data);
 private:
 };
 
