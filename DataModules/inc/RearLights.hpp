@@ -18,6 +18,10 @@ public:
   RearLights();
   virtual ~RearLights();
   bool isBreakPressed() const;
+
+  // CAN Functions
+  void ToByteArray(uint8_t* buff) const;
+  void FromByteArray(uint8_t* buff);
 protected:
   bool break_;
 };
