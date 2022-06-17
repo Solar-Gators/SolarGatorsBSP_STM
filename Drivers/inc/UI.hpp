@@ -9,99 +9,53 @@
 #define SOLARGATORSBSP_DRIVERS_INC_UI_HPP_
 
 #include "main.h"
-// TODO: Make this a generic display driver
-#include "HY28b.hpp"
+#include "ILI9341.hpp"
+
+// ETL Stuff
+#include "etl/array.h"
+#include "etl/string.h"
+#include "etl/to_string.h"
+#include "etl/string_utilities.h"
+#include "etl/format_spec.h"
+
+// RTOS Stuff
+#include <cmsis_os.h>
 
 namespace SolarGators {
 namespace Drivers {
 
+// Minor UI Element Struct
+class InfoSquare {
+public:
+  etl::string<5> title;
+  uint16_t x;
+  uint16_t y;
+  static constexpr uint16_t TextPaddX  = 10;
+  static constexpr uint16_t TitlePaddY = 7;
+  static constexpr uint16_t DataPaddY  = 4;
+  static constexpr uint16_t DataSqW    = 80;
+  static constexpr uint16_t DataSqH    = 50;
+  static constexpr uint16_t TextWidth  = 6;
+  static constexpr uint16_t TextHeight = 8;
+  static constexpr uint8_t TextSize = 2;
+  void Draw(ILI9341& disp);
+  void UpdateValue(ILI9341& disp, etl::string<5>& val);
+};
+
+// Trip Code Struct
+
 class UI {
 public:
-  UI(uint16_t background_color_, HY28b& display);
-  virtual ~UI();
-  void UpdateSpeed(uint8_t);
-  void UpdateCurrent(uint8_t);
-  void UpdateSOC(uint8_t);
+  UI(ILI9341& display);
+  ~UI();
+  void Update();
+  ILI9341& disp;
+  void UpdateSquare(uint8_t num, etl::string<5>& val);
+  void UpdateSpeed(float speed);
 private:
-  void UpdateDisplayValue(point_t pos, dimension_t char_size, const char* old_value, const char* new_value);
-  void DrawTitle(point_t pos, const char* title);
-  // Background Color
-  const uint16_t background_color_;
-  const uint16_t title_color_ = HY28b::WHITE;
-  // Display driver handle
-  HY28b& display_;
-  // Max Digits
-  static constexpr uint8_t Max_Current_Digits = 3;
-  static constexpr uint8_t Max_Speed_Digits = 2;
-  static constexpr uint8_t Max_SOC_Digits = 3;
-  /* ---- Important ---- */
-  // This is the max of all the above
-  static constexpr uint8_t Max_Length = 3;
-  // Sizes
-  inline static constexpr uint8_t Current_Size = 4;
-  inline static constexpr uint8_t Speed_Size = 5;
-  inline static constexpr uint8_t SOC_Size = 4;
-  inline static constexpr uint8_t Title_Size = 1;
-  // Char Size (Defined in ASCII.hpp)
-  inline static constexpr dimension_t Char_Size = {
-      .x = 8,
-      .y = 16
-  };
-  inline static constexpr dimension_t Current_Char_Size =
-  {
-      .x = Char_Size.x * Current_Size,
-      .y = Char_Size.y * Current_Size
-  };
-  inline static constexpr dimension_t Speed_Char_Size =
-  {
-      .x = Char_Size.x * Speed_Size,
-      .y = Char_Size.y * Speed_Size
-  };
-  inline static constexpr dimension_t SOC_Char_Size =
-  {
-      .x = Char_Size.x * SOC_Size,
-      .y = Char_Size.y * SOC_Size
-  };
-  inline static constexpr dimension_t Title_Char_Size =
-  {
-      .x = Char_Size.x * Title_Size,
-      .y = Char_Size.y * Title_Size
-  };
-  // Positions
-  inline static constexpr point_t Speed_Position =
-  {
-    .x = HY28b::MAX_SCREEN_X/2 - (Speed_Char_Size.x * Max_Speed_Digits)/2,
-    .y = HY28b::MAX_SCREEN_Y/2 - (Speed_Char_Size.y)/2
-  };
-  inline static constexpr point_t Current_Position =
-  {
-    .x = (HY28b::MAX_SCREEN_X/4)*3 - (Current_Char_Size.x * Max_Current_Digits)/2,
-    .y = HY28b::MAX_SCREEN_Y/4 - (Current_Char_Size.y)/2
-  };
-  inline static constexpr point_t SOC_Position =
-  {
-    .x = HY28b::MAX_SCREEN_X/4 - (SOC_Char_Size.x * Max_SOC_Digits)/2,
-    .y = HY28b::MAX_SCREEN_Y/4 - (SOC_Char_Size.y)/2
-  };
-  inline static constexpr point_t Speed_Title_Pos =
-  {
-      .x = Speed_Position.x + Speed_Char_Size.x/2,
-      .y = Speed_Position.y - 10
-  };
-  inline static constexpr point_t Current_Title_Pos =
-  {
-      .x = Current_Position.x + Current_Char_Size.x/2*Max_Current_Digits - 20,
-      .y = Current_Position.y - 10
-  };
-  inline static constexpr point_t SOC_Title_Pos =
-  {
-      .x = SOC_Position.x + SOC_Char_Size.x/2*Max_SOC_Digits - 5,
-      .y = SOC_Position.y - 10
-  };
-  // Display values
-  uint8_t speed_;
-  uint8_t current_;
-  uint8_t state_of_charge_;
+  etl::array<InfoSquare, 4> first_row_;
+  void DrawSpeed();
+  void DrawTripCodes();
 };
 
 } /* namespace Drivers */

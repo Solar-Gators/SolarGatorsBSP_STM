@@ -16,13 +16,15 @@ namespace DataModules {
 class FrontLights: public DataModule {
 public:
   FrontLights();
-  virtual ~FrontLights();
-  uint16_t GetBreak() const;
-  uint16_t GetThrottle() const;
+  ~FrontLights();
+  uint16_t GetThrottleVal() const;
+
+  // CAN Functions
+  void ToByteArray(uint8_t* buff) const;
+  void FromByteArray(uint8_t* buff);
 
 protected:
   uint16_t throttle_;
-  uint16_t break_;
   // TODO: Accelerometer values
 };
 

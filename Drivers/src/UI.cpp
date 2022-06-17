@@ -6,19 +6,44 @@
  */
 
 #include <UI.hpp>
-#include <string>
 
 namespace SolarGators {
 namespace Drivers {
 
-UI::UI(uint16_t background_color, HY28b& display):background_color_(background_color),display_(display)
+void InfoSquare::Draw(ILI9341& disp)
 {
-  speed_ = 0;
-  current_ = 0;
-  state_of_charge_ = 0;
-  DrawTitle(Speed_Title_Pos, "Speed");
-  DrawTitle(SOC_Title_Pos, "SOC");
-  DrawTitle(Current_Title_Pos, "Current");
+  disp.SetTextSize(TextSize);
+  // Draw the Border
+  disp.DrawRect(x, y, DataSqW, DataSqH, 0xF800);
+  // Draw the Title
+  disp.DrawText(x+TextPaddX, y+TitlePaddY, title.c_str(), 0xF800);
+  etl::string<5> tmp(" N/A ");
+  UpdateValue(disp, tmp);
+}
+
+void InfoSquare::UpdateValue(ILI9341& disp, etl::string<5>& val)
+{
+  disp.SetTextSize(TextSize);
+  disp.DrawText(x+TextPaddX, TextHeight*TextSize+TitlePaddY+DataPaddY+y, val.c_str(), 0xF800);
+}
+
+UI::UI(ILI9341& display):disp(display)
+{
+  // Set Screen Orientation
+  disp.SetRotation(3);
+  // Set Background Color
+  disp.ClearScreen(0x0000);
+  // Setup info squares
+  etl::string<5> titles[] = {"Accel"," SOC ","Voltg","Curnt"};
+  for (size_t i = 0; i < first_row_.size(); ++i)
+  {
+    first_row_[i].title = titles[i];
+    first_row_[i].x = i*InfoSquare::DataSqW;
+    first_row_[i].y = 0;
+    first_row_[i].Draw(disp);
+  }
+  DrawSpeed();
+  DrawTripCodes();
 }
 
 UI::~UI()
@@ -26,56 +51,64 @@ UI::~UI()
 
 }
 
-void UI::UpdateSpeed(uint8_t new_speed)
+void UI::UpdateSquare(uint8_t num, etl::string<5>& val)
 {
-  std::string new_speed_s = std::to_string(new_speed);
-  std::string old_speed_s = std::to_string(speed_);
-  display_.SetSize(Speed_Size);
-  UpdateDisplayValue(Speed_Position, Speed_Char_Size, old_speed_s.c_str(), new_speed_s.c_str());
-  speed_ = new_speed;
-}
-void UI::UpdateCurrent(uint8_t new_current)
-{
-  std::string new_s = std::to_string(new_current);
-  std::string old_s = std::to_string(current_);
-  display_.SetSize(Current_Size);
-  UpdateDisplayValue(Current_Position, Current_Char_Size, old_s.c_str(), new_s.c_str());
-  current_ = new_current;
-}
-void UI::UpdateSOC(uint8_t new_soc)
-{
-  std::string new_s = std::to_string(new_soc);
-  std::string old_s = std::to_string(state_of_charge_);
-  display_.SetSize(SOC_Size);
-  UpdateDisplayValue(SOC_Position, SOC_Char_Size, old_s.c_str(), new_s.c_str());
-  state_of_charge_ = new_soc;
+  if(num < 4)
+  {
+    first_row_[num].UpdateValue(disp, val);
+  }
 }
 
-void UI::UpdateDisplayValue(point_t pos, dimension_t char_size, const char* old_value, const char* new_value)
+void UI::DrawSpeed()
 {
-  // See if strings are the same
-  uint8_t i = 0;
-  while (*old_value && (*old_value == *new_value))
-  {
-    ++i;
-    ++old_value;
-    ++new_value;
-  }
-  if(*old_value == '\0')
-    return;
-  display_.DrawText(pos.x + i * char_size.x, pos.y, (uint8_t*)old_value, background_color_);
-  if(*new_value == '\0')
-  {
-    new_value -= i;
-    i = 0;
-  }
-  display_.DrawText(pos.x + i * char_size.x, pos.y, (uint8_t*)new_value, display_.RED);
+  // Draw Speed
+  disp.SetTextSize(3);
+  const char* str2 = "Speed";
+  disp.DrawText(115, 54, str2, 0xF800);
+  disp.SetTextSize(4);
+  UpdateSpeed(99.9);
 }
 
-void UI::DrawTitle(point_t pos, const char* title)
+void UI::UpdateSpeed(float speed)
 {
-  display_.SetSize(Title_Size);
-  display_.DrawText(pos.x, pos.y, (uint8_t*)title, title_color_);
+  // Draw Speed
+  disp.SetTextSize(3);
+  etl::string<4> s_speed;
+  etl::to_string(speed, s_speed, etl::format_spec().precision(1).width(4).fill(0), false);
+  disp.DrawText(112+9, 82, s_speed.c_str(), 0xF800);
+}
+
+void UI::DrawTripCodes()
+{
+  // Mitsuba Trip Codes
+  const char* mitsuba_faults[] = {
+    "adSensorError", "motorCurrSensorUError",
+    "motorCurrSensorWError", "fetThermError",
+    "battVoltSensorError", "battCurrSensorError",
+    "battCurrSensorAdjError", "motorCurrSensorAdjError",
+    "accelPosError", "contVoltSensorError",
+    "powerSystemError", "overCurrError",
+    "overVoltError", "overCurrLimit",
+    "motorSystemError", "motorLock",
+    "hallSensorShort", "hallSensorOpen" };
+  // BMS Trip Codes
+  const char* orion_faults[] = {
+    "Internal Cell Communication", "Cell Balancing Stuck Off",
+    "Weak Cell", "Low Cell Voltage", "Cell Open Wiring",
+    "Current Sensor", "Cell Voltage Over 5v",
+    "Cell Bank", "Weak Pack", "Fan Monitor",
+    "Thermistor", "Can Communication",
+    "Redundant Power Supply", "High Voltage Isolation",
+    "Invalid Input Supply Voltage", "Charge En Relay",
+    "Discharge En Relay", "Charger Safety Relay",
+    "Internal Hardware", "Internal Heatsink Thermistor",
+    "Internal Logic", "Highest Cell Voltage Too High",
+    "Lowest Cell Voltage Too Low", "Pack Too Hot"};
+    disp.SetTextSize(2);
+    disp.DrawText(0, 120, "BMS Status: OK", 0xFFFF);
+    disp.DrawText(0, 140, "This is a place holder", 0x8F00);
+    disp.DrawText(0, 180, "MC Status: OK", 0xFFFF);
+    disp.DrawText(0, 200, "This is a place holder", 0x8F00);
 }
 
 } /* namespace Drivers */
