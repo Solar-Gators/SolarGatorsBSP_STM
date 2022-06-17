@@ -11,29 +11,30 @@ namespace SolarGators {
 namespace DataModules {
 namespace {
   static constexpr uint32_t ID = 0x1234;
-  static constexpr uint32_t SIZE = 0x2;
+  static constexpr uint32_t SIZE = 2;
 }
 
 FrontLights::FrontLights():
-        DataModule(ID, 0, SIZE)
-{
-  // TODO Auto-generated constructor stub
-
-}
+        DataModule(ID, 0, SIZE),
+        throttle_(0)
+{ }
 
 FrontLights::~FrontLights()
-{
-  // TODO Auto-generated destructor stub
-}
+{ }
 
-uint16_t FrontLights::GetBreak() const
-{
-  return break_;
-}
-
-uint16_t FrontLights::GetThrottle() const
+uint16_t FrontLights::GetThrottleVal() const
 {
   return throttle_;
+}
+
+void FrontLights::ToByteArray(uint8_t* buff) const
+{
+  buff[0] = static_cast<uint8_t>(throttle_);
+  buff[1] = static_cast<uint8_t>(throttle_ >> 8);
+}
+void FrontLights::FromByteArray(uint8_t* buff)
+{
+  throttle_ = static_cast<uint16_t>(buff[1]) << 8 | buff[0];
 }
 
 } /* namespace DataModules */
