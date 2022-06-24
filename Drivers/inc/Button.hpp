@@ -8,8 +8,7 @@
 #ifndef SOLARGATORSBSP_DRIVERS_INC_BUTTON_HPP_
 #define SOLARGATORSBSP_DRIVERS_INC_BUTTON_HPP_
 
-#include "string"
-#include "functional"
+#include "etl/delegate.h"
 
 #include "cmsis_os.h"
 #include "main.h"
@@ -19,12 +18,12 @@ namespace Drivers {
 class Button
 {
 public:
-  Button(const char* name, GPIO_TypeDef* port, uint16_t pin, uint16_t press_time = 0, GPIO_PinState active_state = GPIO_PIN_SET);
+  Button(const char* name, GPIO_TypeDef* port, uint16_t pin, uint16_t press_time = 0, GPIO_PinState active_state = GPIO_PIN_RESET);
   ~Button();
   GPIO_PinState ReadPin();
   void HandlePress();
   void Debounce();
-  std::function<void(void)> action_;
+  etl::delegate<void(void)> action_;
   // Name of the function
   const char* name_;
   GPIO_TypeDef* port_;
