@@ -10,7 +10,7 @@
 namespace SolarGators {
 namespace DataModules {
 namespace {
-  static constexpr uint32_t ID = 0x1234;
+  static constexpr uint32_t ID = 0x234;
   static constexpr uint32_t SIZE = 2;
 }
 

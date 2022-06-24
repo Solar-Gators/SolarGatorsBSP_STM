@@ -30,17 +30,18 @@ void MCP33151::Init()
 
 uint16_t MCP33151::Read()
 {
-  uint8_t buff[2];
+  uint16_t data;
   // Start conversion
   HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
-  // This is unfortunately blocking delay 1ms (t_cnv)
-  osDelay(1);
+  // This is unfortunately blocking delay 2ms (t_cnv)
+  osDelay(2);
   // Write Pin low (this will start output)
   HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_RESET);
-  HAL_SPI_Receive(spi_, buff, 2, HAL_MAX_DELAY);
+  HAL_SPI_Receive(spi_, (uint8_t*)&data, 2, HAL_MAX_DELAY);
+//  data = (data) & 0x3FFF;
   // Keep pin low SDO with go high Z after 14 clk cycles
 //  HAL_GPIO_WritePin(cs_port_, cs_pin_, GPIO_PIN_SET);
-  return (buff[0] << 8 | buff[1]);
+  return data;
 }
 
 void MCP33151::Calibrate()
