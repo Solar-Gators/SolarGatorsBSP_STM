@@ -21,6 +21,10 @@
 // RTOS Stuff
 #include <cmsis_os.h>
 
+// CAN messages
+#include "Mitsuba.hpp"
+#include "OrionBMS.hpp"
+
 namespace SolarGators {
 namespace Drivers {
 
@@ -46,6 +50,8 @@ class UI {
 public:
   UI(ILI9341& display);
   ~UI();
+  void UpdateBMSTrip(SolarGators::DataModules::OrionBMSRx4* bmsCodes);
+  void UpdateMitsubaTrip(SolarGators::DataModules::MitsubaRx2* mitsubaCodes);
   void Update();
   ILI9341& disp;
   void UpdateSquare(uint8_t num, etl::string<5>& val);
