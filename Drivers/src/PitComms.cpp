@@ -23,6 +23,7 @@ PitComms::~PitComms()
 void PitComms::SendDataModule(SolarGators::DataModules::DataModule& data_module)
 {
   // Start Condition
+  osMutexAcquire(data_module.mutex_id_, osWaitForever);
   radio_->SendByte(START_CHAR);
   // Only Sending one Datamodule
   radio_->SendByte(EscapeData((data_module.can_id_ & 0xFF000000) >> 24));
@@ -41,6 +42,7 @@ void PitComms::SendDataModule(SolarGators::DataModules::DataModule& data_module)
   }
   // End condition
   radio_->SendByte(END_CHAR);
+  osMutexRelease(data_module.mutex_id_);
 }
 
 inline uint8_t PitComms::EscapeData(uint8_t data)

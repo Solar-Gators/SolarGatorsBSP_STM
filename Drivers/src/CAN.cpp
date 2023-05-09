@@ -6,7 +6,8 @@
  */
 
 #include <CAN.hpp>
-
+#include "DataModuleInfo.hpp"
+//#include "user.hpp"
 namespace SolarGators {
 namespace Drivers {
 
@@ -64,6 +65,11 @@ void CANDriver::HandleReceive()
         osMutexAcquire(rx_module->mutex_id_, osWaitForever);
         rx_module->FromByteArray(aData);
         osMutexRelease(rx_module->mutex_id_);
+      }
+      if(rx_module->can_id_ == SolarGators::DataModuleInfo::BMS_RX0_MSG_ID){
+    	  //reset a flag
+    	  //SolarGators::Drivers::CANDriver::rx_fifo_num_;
+    	  //CANStatusFlag = false;
       }
     }
     HAL_CAN_ActivateNotification(hcan_, CAN_IT_RX_FIFO0_MSG_PENDING);

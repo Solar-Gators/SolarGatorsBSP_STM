@@ -121,6 +121,7 @@ namespace SolarGators::DataModules
     buff[5] = (pack_current_ & 0x00FF);
     buff[6] = constant_val_ >> 8;
     buff[7] = (constant_val_ & 0x00FF);
+    //buff[8] = math on 0-7
   }
 
   void OrionBMSRx2::FromByteArray(uint8_t* buff)
@@ -129,6 +130,7 @@ namespace SolarGators::DataModules
     pack_ccl_     = (static_cast<uint16_t>(buff[2]) << 8) | buff[3];
     pack_current_ = (static_cast<uint16_t>(buff[4]) << 8) | buff[5];
     constant_val_ = (static_cast<uint16_t>(buff[6]) << 8) | buff[7];
+    //checksum correct = math on checksum
   }
 
   uint16_t OrionBMSRx2::getConstantVal() const {
