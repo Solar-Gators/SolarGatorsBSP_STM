@@ -37,15 +37,15 @@ memcpy(hold_Cur, &inputCurrent, sizeof(float));
 	*/
 
 	//bypassing the float conversion to see if that's what's causing hangs
-	buff[0] = inputVoltage >> 24;
-	buff[1] = (inputVoltage >> 16) & 0xFF;
-	buff[2] = (inputVoltage >> 8) & 0xFF;
-	buff[3] = (inputVoltage & 0xFF);
+	buff[0] = (int32_t)inputVoltage >> 24;
+	buff[1] = ((int32_t)inputVoltage >> 16) & 0xFF;
+	buff[2] = ((int32_t)inputVoltage >> 8) & 0xFF;
+	buff[3] = ((int32_t)inputVoltage & 0xFF);
 
-	buff[4] = inputCurrent >> 24;
-	buff[5] = (inputCurrent >> 16) & 0xFF;
-	buff[6] = (inputCurrent >> 8) & 0xFF;
-	buff[7] = (inputCurrent & 0xFF);
+	buff[4] = (int32_t)inputCurrent >> 24;
+	buff[5] = ((int32_t)inputCurrent >> 16) & 0xFF;
+	buff[6] = ((int32_t)inputCurrent >> 8) & 0xFF;
+	buff[7] = ((int32_t)inputCurrent & 0xFF);
 }
 
 void Mpptx0::FromByteArray(uint8_t* buff)
