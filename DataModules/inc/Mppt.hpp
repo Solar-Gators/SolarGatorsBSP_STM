@@ -24,8 +24,10 @@ namespace SolarGators::DataModules
 		void ToByteArray(uint8_t* buff) const;
 		void FromByteArray(uint8_t* buff);
 	protected:
-		float inputVoltage;
-		float inputCurrent;
+		//float inputVoltage;
+		//float inputCurrent;
+		uint32_t inputVoltage;
+		uint32_t inputCurrent;
 	};
 
 	class Mpptx1 final: public DataModule {

@@ -21,6 +21,7 @@ Mpptx0::Mpptx0(uint32_t can_id):
 
 void Mpptx0::ToByteArray(uint8_t* buff) const
 {
+	/*
 uint8_t hold_Volt[sizeof(float)];
 uint8_t hold_Cur[sizeof(float)];
 
@@ -33,10 +34,23 @@ memcpy(hold_Cur, &inputCurrent, sizeof(float));
 	for (int i=4;i<=7;i++){
 		buff[i] = hold_Cur[i];
 	}
+	*/
+
+	//bypassing the float conversion to see if that's what's causing hangs
+	buff[0] = inputVoltage >> 24;
+	buff[1] = (inputVoltage >> 16) & 0xFF;
+	buff[2] = (inputVoltage >> 8) & 0xFF;
+	buff[3] = (inputVoltage & 0xFF);
+
+	buff[4] = inputCurrent >> 24;
+	buff[5] = (inputCurrent >> 16) & 0xFF;
+	buff[6] = (inputCurrent >> 8) & 0xFF;
+	buff[7] = (inputCurrent & 0xFF);
 }
 
 void Mpptx0::FromByteArray(uint8_t* buff)
 {
+	/*
 uint8_t hold_Volt[sizeof(float)];
 uint8_t hold_Cur[sizeof(float)];
 
@@ -48,6 +62,9 @@ uint8_t hold_Cur[sizeof(float)];
 	}
 memcpy(&inputVoltage, hold_Volt, sizeof(float));
 memcpy(&inputCurrent, hold_Cur, sizeof(float));
+	*/
+	inputVoltage = (static_cast<uint32_t>(buff[0] << 24) | (buff[1] << 16) | (buff[2] << 8) | buff[3]);
+	inputCurrent = (static_cast<uint32_t>(buff[4] << 24) | (buff[5] << 16) | (buff[6] << 8) | buff[7]);
 }
 
 float Mpptx0::getInputVoltage() const {
