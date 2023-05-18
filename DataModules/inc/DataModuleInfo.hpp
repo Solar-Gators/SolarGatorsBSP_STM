@@ -12,7 +12,7 @@
 namespace SolarGators::DataModuleInfo
 {
 // ---- Addresses ---- //
-
+//0x7F0 (2032) is the highest possible id
 // BMS
 static constexpr uint32_t BMS_RX0_MSG_ID = 0x6B0;
 static constexpr uint32_t BMS_RX1_MSG_ID = 0x6B1;
@@ -31,6 +31,8 @@ static constexpr uint32_t MOTORRX2_RL_MSG_ID = 0x08A50225;
 
 // MPPT
 static constexpr uint16_t MPPT0_MSG_ID = 0x600;
+static constexpr uint16_t MPPT1_MSG_ID = 0x610;
+static constexpr uint16_t MPPT2_MSG_ID = 0x620;
 
 // Steering Wheel
 static constexpr uint16_t STEERING_ID = 2048;
