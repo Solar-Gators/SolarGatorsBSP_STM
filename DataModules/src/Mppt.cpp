@@ -13,6 +13,15 @@ namespace {
 
 namespace SolarGators::DataModules
 {
+
+union float2byte
+{
+	float f;
+	char s[4];
+};
+
+float2byte f2b;
+
 Mpptx0::Mpptx0(uint32_t can_id):
 		DataModule(can_id, 0, SIZE),
 		inputVoltage(0),
@@ -21,50 +30,26 @@ Mpptx0::Mpptx0(uint32_t can_id):
 
 void Mpptx0::ToByteArray(uint8_t* buff) const
 {
-	/*
-uint8_t hold_Volt[sizeof(float)];
-uint8_t hold_Cur[sizeof(float)];
-
-memcpy(hold_Volt, &inputVoltage, sizeof(float));
-memcpy(hold_Cur, &inputCurrent, sizeof(float));
-
+	f2b.f = inputVoltage;
 	for (int i=0;i<=3;i++){
-		buff[i] = hold_Volt[i];
+		buff[i] = f2b.s[i];
 	}
+	f2b.f = inputCurrent;
 	for (int i=4;i<=7;i++){
-		buff[i] = hold_Cur[i];
+		buff[i] = f2b.s[i-4];
 	}
-	*/
-
-	//bypassing the float conversion to see if that's what's causing hangs
-	buff[0] = (int32_t)inputVoltage >> 24;
-	buff[1] = ((int32_t)inputVoltage >> 16) & 0xFF;
-	buff[2] = ((int32_t)inputVoltage >> 8) & 0xFF;
-	buff[3] = ((int32_t)inputVoltage & 0xFF);
-
-	buff[4] = (int32_t)inputCurrent >> 24;
-	buff[5] = ((int32_t)inputCurrent >> 16) & 0xFF;
-	buff[6] = ((int32_t)inputCurrent >> 8) & 0xFF;
-	buff[7] = ((int32_t)inputCurrent & 0xFF);
 }
 
 void Mpptx0::FromByteArray(uint8_t* buff)
 {
-	/*
-uint8_t hold_Volt[sizeof(float)];
-uint8_t hold_Cur[sizeof(float)];
-
 	for(int i=0;i<=3;i++){
-		hold_Volt[i] = buff[i];
+		f2b.s[i] = buff[i];
 	}
+	inputVoltage = f2b.f;
 	for(int i=4;i<=7;i++){
-		hold_Cur[i] = buff[i];
+		f2b.s[i-4] = buff[i];
 	}
-memcpy(&inputVoltage, hold_Volt, sizeof(float));
-memcpy(&inputCurrent, hold_Cur, sizeof(float));
-	*/
-	inputVoltage = (static_cast<uint32_t>(buff[0] << 24) | (buff[1] << 16) | (buff[2] << 8) | buff[3]);
-	inputCurrent = (static_cast<uint32_t>(buff[4] << 24) | (buff[5] << 16) | (buff[6] << 8) | buff[7]);
+	inputCurrent = f2b.f;
 }
 
 float Mpptx0::getInputVoltage() const {
@@ -83,33 +68,30 @@ Mpptx1::Mpptx1(uint32_t can_id): // INCREMENT BY 1 FROM MPPTx0
 
 void Mpptx1::ToByteArray(uint8_t* buff) const
 {
-uint8_t hold_Volt[sizeof(float)];
-uint8_t hold_Cur[sizeof(float)];
-
-memcpy(hold_Volt, &outputVoltage, sizeof(float));
-memcpy(hold_Cur, &outputCurrent, sizeof(float));
+	f2b.f = outputVoltage;
 
 	for (int i=0;i<=3;i++){
-		buff[i] = hold_Volt[i];
+		buff[i] = f2b.s[i];
 	}
+
+	f2b.f = outputCurrent;
+
 	for (int i=4;i<=7;i++){
-		buff[i] = hold_Cur[i];
+		buff[i] = f2b.s[i-4];
 	}
 }
 
 void Mpptx1::FromByteArray(uint8_t* buff)
 {
-uint8_t hold_Volt[sizeof(float)];
-uint8_t hold_Cur[sizeof(float)];
-
 	for(int i=0;i<=3;i++){
-		hold_Volt[i] = buff[i];
+		f2b.s[i] = buff[i];
 	}
+	outputVoltage = f2b.f;
+
 	for(int i=4;i<=7;i++){
-		hold_Cur[i] = buff[i];
+		f2b.s[i-4] = buff[i];
 	}
-memcpy(&outputVoltage, hold_Volt, sizeof(float));
-memcpy(&outputCurrent, hold_Cur, sizeof(float));
+	outputCurrent = f2b.f;
 }
 
 float Mpptx1::getOutputVoltage() const {
@@ -128,33 +110,26 @@ Mpptx2::Mpptx2(uint32_t can_id): // INCREMENT BY 2 FROM MPPTx0
 
 void Mpptx2::ToByteArray(uint8_t* buff) const
 {
-uint8_t hold_Mos[sizeof(float)];
-uint8_t hold_Con[sizeof(float)];
-
-memcpy(hold_Mos, &mosfetTemp, sizeof(float));
-memcpy(hold_Con, &controllerTemp, sizeof(float));
-
+	f2b.f = mosfetTemp;
 	for (int i=0;i<=3;i++){
-		buff[i] = hold_Mos[i];
+		buff[i] = f2b.s[i];
 	}
+	f2b.f = controllerTemp;
 	for (int i=4;i<=7;i++){
-		buff[i] = hold_Con[i];
+		buff[i] = f2b.s[i-4];
 	}
 }
 
 void Mpptx2::FromByteArray(uint8_t* buff)
 {
-uint8_t hold_Mos[sizeof(float)];
-uint8_t hold_Con[sizeof(float)];
-
 	for(int i=0;i<=3;i++){
-		hold_Mos[i] = buff[i];
+		f2b.s[i] = buff[i];
 	}
+	mosfetTemp = f2b.f;
 	for(int i=4;i<=7;i++){
-		hold_Con[i] = buff[i];
+		f2b.s[i-4] = buff[i];
 	}
-memcpy(&mosfetTemp, hold_Mos, sizeof(float));
-memcpy(&controllerTemp, hold_Con, sizeof(float));
+	controllerTemp = f2b.f;
 }
 
 float Mpptx2::getMosfetTemp() const {
@@ -173,33 +148,26 @@ Mpptx3::Mpptx3(uint32_t can_id): // INCREMENT BY 3 FROM MPPTx0
 
 void Mpptx3::ToByteArray(uint8_t* buff) const
 {
-uint8_t hold_12V[sizeof(float)];
-uint8_t hold_3V[sizeof(float)];
-
-memcpy(hold_12V, &aux12V, sizeof(float));
-memcpy(hold_3V, &aux3V, sizeof(float));
-
+	f2b.f = aux12V;
 	for (int i=0;i<=3;i++){
-		buff[i] = hold_12V[i];
+		buff[i] = f2b.s[i];
 	}
+	f2b.f = aux3V;
 	for (int i=4;i<=7;i++){
-		buff[i] = hold_3V[i];
+		buff[i] = f2b.s[i-4];
 	}
 }
 
 void Mpptx3::FromByteArray(uint8_t* buff)
 {
-uint8_t hold_12V[sizeof(float)];
-uint8_t hold_3V[sizeof(float)];
-
 	for(int i=0;i<=3;i++){
-		hold_12V[i] = buff[i];
+		f2b.s[i] = buff[i];
 	}
+	aux12V = f2b.f;
 	for(int i=4;i<=7;i++){
-		hold_3V[i] = buff[i];
+		f2b.s[i-4] = buff[i];
 	}
-memcpy(&aux12V, hold_12V, sizeof(float));
-memcpy(&aux3V, hold_3V, sizeof(float));
+	aux3V = f2b.f;
 }
 
 float Mpptx3::getAux12V() const {
@@ -213,41 +181,59 @@ float Mpptx3::getAux3V() const {
 Mpptx4::Mpptx4(uint32_t can_id): // INCREMENT BY 4 FROM MPPTx0
 	DataModule(can_id, 0, SIZE),
 	maxOutputVoltage(0),
-	maxInputCurrent(0) // unsure if i need to do this, orionBMS doesnt but steering does
+	maxInputCurrent(0)
 {}
 
 void Mpptx4::ToByteArray(uint8_t* buff) const
 {
-uint8_t hold_MOV[sizeof(float)];
-uint8_t hold_MIC[sizeof(float)];
+	//need to be cautious of data types when using a union like this
+	union{
+		uint8_t y[4];
+		float z;
+	} data;
 
-memcpy(hold_MOV, &maxOutputVoltage, sizeof(float));
-memcpy(hold_MIC, &maxInputCurrent, sizeof(float));
+	data.z = maxOutputVoltage;
+	buff[3] = data.y[3];
+	buff[2] = data.y[2];
+	buff[1] = data.y[1];
+	buff[0] = data.y[0];
 
-	for (int i=0;i<=3;i++){
-		buff[i] = hold_MOV[i];
-	}
-	for (int i=4;i<=7;i++){
-		buff[i] = hold_MIC[i];
-	}
+	data.z = maxInputCurrent;
+	buff[7] = data.y[3];
+	buff[6] = data.y[2];
+	buff[5] = data.y[1];
+	buff[4] = data.y[0];
 }
 
 void Mpptx4::FromByteArray(uint8_t* buff)
 {
-uint8_t hold_MOV[sizeof(float)];
-uint8_t hold_MIC[sizeof(float)];
-
+	//the below is an alernate way of type punning that i think is more safe cuz declared datatypes...
+	//but i like the actual way better it looks more efficient
+	/*
+	unsigned long int maxVolt = (unsigned long int)buff[3]<<24|(unsigned long int)buff[2]<<16|(unsigned long int)buff[1]<<8|(unsigned long int)buff[0];
+	unsigned long int maxCur = (unsigned long int)buff[7]<<24|(unsigned long int)buff[6]<<16|(unsigned long int)buff[5]<<8|(unsigned long int)buff[4];
+	union
+	{
+		long y;
+		float z;
+	}data;
+	data.y = maxCur;
+	maxInputCurrent = data.z;
+	data.y = maxVolt;
+	maxOutputVoltage = data.z;
+	*/
 	for(int i=0;i<=3;i++){
-		hold_MOV[i] = buff[i];
+		f2b.s[i] = buff[i];
 	}
+	maxOutputVoltage = f2b.f;
 	for(int i=4;i<=7;i++){
-		hold_MIC[i] = buff[i];
+		f2b.s[i-4] = buff[i];
 	}
-memcpy(&maxOutputVoltage, hold_MOV, sizeof(float));
-memcpy(&maxInputCurrent, hold_MIC, sizeof(float));
+	maxInputCurrent = f2b.f;
 }
 
 float Mpptx4::getMaxOutputVoltage() const {
+	//return float values
 	return maxOutputVoltage;
 }
 

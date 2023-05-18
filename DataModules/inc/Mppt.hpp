@@ -26,8 +26,8 @@ namespace SolarGators::DataModules
 	protected:
 		//float inputVoltage;
 		//float inputCurrent;
-		float inputVoltage;
-		float inputCurrent;
+		uint32_t inputVoltage;
+		uint32_t inputCurrent;
 	};
 
 	class Mpptx1 final: public DataModule {
